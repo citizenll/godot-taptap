@@ -1,0 +1,66 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android.buildFeatures.buildConfig true
+
+ext {
+    pluginVersionCode=1
+    pluginVersionName="1.0.0"
+}
+
+android {
+    namespace 'taptap.citizenl.game'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 33
+        versionCode pluginVersionCode
+        versionName pluginVersionName
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    def libName = project.property("library_name")
+
+    defaultConfig{
+        buildConfigField "String", "LIBRARY_NAME", "\"$libName\""
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.all { output ->
+            output.outputFileName = "$libName.${variant.name}.aar"
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation "com.github.bumptech.glide:glide:4.9.0"
+
+    compileOnly files('libs/godot-lib.4.1.1.stable.template_release.aar')
+    compileOnly files("libs/TapAD_3.16.3.15.aar")
+    compileOnly files('libs/TapBootstrap_3.21.0.aar') // TapTap 启动器
+    compileOnly files('libs/TapCommon_3.21.0.aar') // TapTap 基础库
+    compileOnly files('libs/TapLogin_3.21.0.aar') // TapTap 登录
+
+    compileOnly 'cn.leancloud:storage-android:8.2.19' // 数据存储
+    compileOnly 'cn.leancloud:realtime-android:8.2.19'  // 即时通讯
+}
